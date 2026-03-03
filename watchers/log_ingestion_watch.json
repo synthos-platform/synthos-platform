@@ -1,0 +1,62 @@
+{
+  "metadata": {
+    "xpack": {
+      "type": "json"
+    },
+    "version": 2,
+    "name": "Log ingestion pipeline minimum throughput alert",
+    "service": "log-ingestion",
+    "owner": "infra-team",
+    "last_updated": "2024-01-10",
+    "pr": "PR-312",
+    "related_incident": "INC-188"
+  },
+  "trigger": {
+    "schedule": {
+      "interval": "1m"
+    }
+  },
+  "input": {
+    "search": {
+      "request": {
+        "indices": ["logs-*"],
+        "body": {
+          "query": {
+            "range": {
+              "@timestamp": {
+                "gte": "now-1m"
+              }
+            }
+          },
+          "aggs": {
+            "doc_count": {
+              "value_count": {
+                "field": "_id"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "condition": {
+    "compare": {
+      "ctx.payload.aggregations.doc_count.value": {
+        "lt": 500
+      }
+    }
+  },
+  "actions": {
+    "notify_slack": {
+      "webhook": {
+        "scheme": "https",
+        "host": "hooks.slack.com",
+        "port": 443,
+        "method": "post",
+        "path": "/services/synthos-infra",
+        "body": "{\"text\": \"Log ingestion below 500 docs/min — possible pipeline lag\"}"
+      }
+    }
+  },
+  "throttle_period": "3m"
+}

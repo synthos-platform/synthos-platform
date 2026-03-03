@@ -1,0 +1,62 @@
+{
+  "metadata": {
+    "xpack": {
+      "type": "json"
+    },
+    "version": 3,
+    "name": "Payment failure rate anomaly alert",
+    "service": "payment-service",
+    "owner": "platform-team",
+    "last_updated": "2024-03-15",
+    "pr": "PR-447",
+    "related_incident": "INC-204"
+  },
+  "trigger": {
+    "schedule": {
+      "interval": "5m"
+    }
+  },
+  "input": {
+    "search": {
+      "request": {
+        "indices": ["payments-*"],
+        "body": {
+          "query": {
+            "range": {
+              "@timestamp": {
+                "gte": "now-5m"
+              }
+            }
+          },
+          "aggs": {
+            "failure_rate": {
+              "avg": {
+                "field": "transaction.success"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "condition": {
+    "compare": {
+      "ctx.payload.aggregations.failure_rate.value": {
+        "lt": 0.80
+      }
+    }
+  },
+  "actions": {
+    "notify_pagerduty": {
+      "webhook": {
+        "scheme": "https",
+        "host": "events.pagerduty.com",
+        "port": 443,
+        "method": "post",
+        "path": "/v2/enqueue",
+        "body": "{{#toJson}}ctx.payload{{/toJson}}"
+      }
+    }
+  },
+  "throttle_period": "10m"
+}

@@ -8,8 +8,8 @@
     "service": "log-ingestion",
     "owner": "infra-team",
     "last_updated": "2024-01-10",
-    "pr": "PR-312",
-    "related_incident": "INC-188"
+    "pr": null,
+    "related_incident": null
   },
   "trigger": {
     "schedule": {

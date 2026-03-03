@@ -8,8 +8,8 @@
     "service": "payment-service",
     "owner": "platform-team",
     "last_updated": "2024-03-15",
-    "pr": "PR-447",
-    "related_incident": "INC-204"
+    "pr": null,
+    "related_incident": null
   },
   "trigger": {
     "schedule": {

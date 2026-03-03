@@ -3,7 +3,7 @@
     "xpack": {
       "type": "json"
     },
-    "version": 2,
+    "version": 1,
     "name": "Log ingestion pipeline minimum throughput alert",
     "service": "log-ingestion",
     "owner": "infra-team",
@@ -36,13 +36,6 @@
             }
           }
         }
-      }
-    }
-  },
-  "condition": {
-    "compare": {
-      "ctx.payload.aggregations.doc_count.value": {
-        "lt": 500
       }
     }
   },

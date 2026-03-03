@@ -3,7 +3,7 @@
     "xpack": {
       "type": "json"
     },
-    "version": 3,
+    "version": 2,
     "name": "Payment failure rate anomaly alert",
     "service": "payment-service",
     "owner": "platform-team",
@@ -42,7 +42,7 @@
   "condition": {
     "compare": {
       "ctx.payload.aggregations.failure_rate.value": {
-        "lt": 0.80
+        "lt": 0.75
       }
     }
   },

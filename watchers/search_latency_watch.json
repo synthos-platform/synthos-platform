@@ -1,0 +1,63 @@
+{
+  "metadata": {
+    "xpack": {
+      "type": "json"
+    },
+    "version": 2,
+    "name": "Search p95 latency threshold alert",
+    "service": "search-service",
+    "owner": "search-team",
+    "last_updated": "2024-06-02",
+    "pr": "PR-581",
+    "related_incident": null
+  },
+  "trigger": {
+    "schedule": {
+      "interval": "2m"
+    }
+  },
+  "input": {
+    "search": {
+      "request": {
+        "indices": ["search-logs-*"],
+        "body": {
+          "query": {
+            "range": {
+              "@timestamp": {
+                "gte": "now-2m"
+              }
+            }
+          },
+          "aggs": {
+            "p95_latency": {
+              "percentiles": {
+                "field": "response_time_ms",
+                "percents": [95]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "condition": {
+    "compare": {
+      "ctx.payload.aggregations.p95_latency.values.95": {
+        "gt": 1200
+      }
+    }
+  },
+  "actions": {
+    "notify_slack": {
+      "webhook": {
+        "scheme": "https",
+        "host": "hooks.slack.com",
+        "port": 443,
+        "method": "post",
+        "path": "/services/synthos-alerts",
+        "body": "{\"text\": \"Search p95 latency exceeded 1200ms threshold\"}"
+      }
+    }
+  },
+  "throttle_period": "5m"
+}

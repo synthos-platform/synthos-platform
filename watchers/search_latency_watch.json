@@ -3,12 +3,12 @@
     "xpack": {
       "type": "json"
     },
-    "version": 2,
+    "version": 1,
     "name": "Search p95 latency threshold alert",
     "service": "search-service",
     "owner": "search-team",
     "last_updated": "2024-06-02",
-    "pr": "PR-581",
+    "pr": null,
     "related_incident": null
   },
   "trigger": {
@@ -43,7 +43,7 @@
   "condition": {
     "compare": {
       "ctx.payload.aggregations.p95_latency.values.95": {
-        "gt": 1200
+        "gt": 800
       }
     }
   },
